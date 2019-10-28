@@ -2,13 +2,12 @@
   "name": "desafio-globo-danilo",
   "version": "1.0.0",
   "description": "Desafio Globo.com",
-  "main": "app.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon src/index.js"
   },
   "author": "Danilo Gila de Santana",
   "license": "ISC",
