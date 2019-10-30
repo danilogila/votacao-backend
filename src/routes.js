@@ -7,11 +7,11 @@ const controllers = require('./app/controllers/')
 
 
 routes.get('/polls', controllers.PollController.index)
-routes.get('/polls/:id', controllers.PollController.show)
+routes.get('/polls/:pollId', controllers.PollController.show)
 routes.post('/polls/new', controllers.PollController.store)
-routes.put('/polls/:id', controllers.PollController.update)
+routes.put('/polls/:pollId', controllers.PollController.update)
 routes.delete('/polls/:id', controllers.PollController.delete)
-
+routes.post('/polls/:pollId/vote/:id')
 
 routes.post('/users', controllers.UserController.store)
 routes.post('/sessions', controllers.SessionController.store)
