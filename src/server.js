@@ -14,7 +14,6 @@ class App{
     }
 
     database() {
-        // url de conexao com o mongo
         mongoose.connect(databaseConfig.uri, {
             useCreateIndex: true,
             useNewUrlParser: true

@@ -1,24 +1,40 @@
 const mongoose =  require('mongoose')
 
 const PollSchema = new mongoose.Schema({
-    name: {
+    author: {
         type: String,
         required: true,
     },
-    email: {
+    thumbnail: {
+        type: String,
+        required: true,
+    },
+    title: {
         type: String,
         required: true,
         unique: true,
         lowercase: true
     },
-    password: {
+    open: {
         type: String,
         required: true,
     },
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    choices: [
+        {
+            value: {
+                type: String,
+                required: true
+            },
+            votes: {
+                type: Number,
+                default: 0
+            }
+        }
+    ]
 })
 
 module.exports = mongoose.model('Poll', PollSchema)
