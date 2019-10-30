@@ -25,30 +25,36 @@ class PollController {
     }
 
     async show(req, res){
-        const title = req.params.id
-
-        console.log(title)
-
-        const poll = await Poll.findById({ title })
-
-        return res.json(poll)
+        const _id = req.params.pollId
+        console.log(req.params)
+        try {
+            const poll = await Poll.findById({ _id })
+            res.status(200).json(poll)
+        } catch (error) {
+            res.status(500).json(error)
+        }
     }
 
     async update(req, res){
-        const { id } = req.params
+        const id = req.params.pollId
 
-        const poll = await Poll.findByIdAndUpdate(id, req.body, {
-            new: true
-        })
+        try {
+            const poll = await Poll.findByIdAndUpdate(id, req.body, {
+                new: true
+            })
 
-        return res.json(poll)
+            return res.json(poll)
+
+        } catch (error) {
+            res.status(500).json(error)
+        }
     }
 
     async delete(req, res){
-        const { id } = req.params
+        const _id = req.params.pollId
 
         try {
-            const poll = Poll.findOneAndDelete({ id })
+            const poll = Poll.findOneAndDelete({ _id })
             res.status(200).json(poll)
         } catch (error) {
             res.status(500).json(error)
