@@ -1,6 +1,6 @@
 const mongoose =  require('mongoose')
-
-const PollSchema = new mongoose.Schema({
+const { Schema } = mongoose
+const PollSchema = new Schema({
     author: {
         type: String,
         required: true,
@@ -23,8 +23,12 @@ const PollSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    choices: [
-        {
+    options: [
+        {   
+            optionId: {
+                type: mongoose.Schema.ObjectId, 
+                auto: true 
+            },
             value: {
                 type: String,
                 required: true
@@ -36,5 +40,29 @@ const PollSchema = new mongoose.Schema({
         }
     ]
 })
+
+// PollSchema.methods = {
+//     vote(pollId, optionId){
+//         // return bcrypt.compare(password, this.password)
+//         console.log(`PollId: ${pollId} OptionId: ${optionId}`)
+//         console.log(this)
+//     }
+// }
+
+PollSchema.methods.submitVote = function(pollId, optionId) {
+    var increment = {
+        $inc: {
+            'choices.$.votes': 1
+        }
+    };
+    var query = {
+        '_id': pollId,
+        'choices._id': optionId,
+    };
+    console.log("ahhhhh")
+    let teste = this.model('Poll').update(query, increment);
+    console.log(teste)
+    return this.model('Poll').update(query, increment);
+};
 
 module.exports = mongoose.model('Poll', PollSchema)
