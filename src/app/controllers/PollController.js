@@ -5,6 +5,10 @@ class PollController {
     async store(req, res){
         const { title } = req.body
 
+        if(!title){
+            return res.status(400).json({ error: 'You should send poll with credentials'})
+        }
+
         if (await Poll.findOne({ title })) {
             return res.status(400).json({ error: 'Poll already exists'})
         }
