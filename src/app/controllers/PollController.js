@@ -26,7 +26,7 @@ class PollController {
 
     async show(req, res){
         const { pollId } = req.params
-        console.log(req.params)
+        
         try {
             const poll = await Poll.findById({ _id: pollId })
             res.status(200).json(poll)
@@ -65,34 +65,20 @@ class PollController {
     async vote(req, res){
         const { pollId, optionId } = req.params
 
-        // const poll = await Poll.findById({ _id: pollId })
-        // poll.submitVote()
-        // for (let index = 0; index < poll["choices"].length; index++) {
-        //     console.log(index)
+        console.log(`PollId: ${pollId}, OptionId: ${optionId} `)
+
+        try {
+            await Poll.update({_id: pollId, 
+                'choices._id': optionId}, {
+                    $inc:{'choices.$.votes':1}
+                })
             
-        // }
-        // const { choices } = poll
-        // console.log(choices)
-        // await Poll.findByIdAndUpdate(pollId, update, {
-        //     new: true
-        // })
+            return res.status(200).json({"msg": "Voto realizado com sucesso"})
 
-        // Poll.findOneAndUpdate({ _id: pollId }, { $inc: {'post.like': 1 } }, {new: true },function(err, response) {
-        //     if (err) {
-        //     callback(err);
-        //    } else {
-        //     callback(response);
-        //    }
+        } catch (error) {
+            res.status(500).json({"msg": "Erro ao realizar a voto"})
+        }
 
-        camps.findOneAndUpdate(
-            {name: "John"}, 
-            {$inc: {"campaigns.7.campaign_id": 1}}, 
-            {upsert: true},
-            function(err, camp) {
-                if(err) return "oi"
-            });
-        console.log(`${pollId}: PollId, ${optionId}: OptionId`)
-        res.status(200).json({"msg": "Vote route"})
     }
 }
 
