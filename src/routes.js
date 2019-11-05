@@ -1,8 +1,9 @@
 const express = require('express')
 const routes = express.Router()
 
-// const authMiddleware = require('./app/middlewares/auth')
-
+const authMiddleware = require('./app/middlewares/')
+const isAuth = require('./app/middlewares/auth')
+const attachUser = require('./app/middlewares/attachUser')
 const controllers = require('./app/controllers/')
 
 
@@ -16,10 +17,16 @@ routes.post('/polls/:pollId/vote/:optionId', controllers.PollController.vote)
 
 routes.get('/users', controllers.UserController.index)
 routes.post('/users', controllers.UserController.store)
-routes.post('/sessions', controllers.SessionController.store)
+
+routes.post('/users/signup', controllers.UserController.signup)
+routes.post('/users/login', controllers.UserController.login)
+// routes.post('/sessions', controllers.SessionController.store)
 
 // routes.use(authMiddleware)
-// routes.get('/teste', authMiddleware, (req, res) => res.json({ ok: true }))
+routes.get('/teste', isAuth, attachUser, (req, res) => {
+    console.log(req)
 
-routes.get('/*', (req, res) => res.send('Hello World'))
+})
+
+// routes.get('/item', authMiddleware.isAuth, authMiddleware.attachUser, (req, res) => res.send('Hello World'))
 module.exports = routes

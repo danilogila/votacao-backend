@@ -1,4 +1,7 @@
 const User = require('../models/User')
+const AuthService = require('../services/auth')
+const isAuth = require('../middlewares/auth')
+const attachCurrentUser = require('../middlewares/attachUser')
 
 class UserController{
     async store(req, res){
@@ -21,6 +24,34 @@ class UserController{
             return res.status(500).json({"error": "Failed to connect to server"})
         }
     }
+
+    async login(req, res) {
+        const email = req.body.user.email;
+        const password = req.body.user.password;
+        try {
+            console.log("Aqui3")
+            const authServiceInstance = new AuthService();
+            console.log("Aqui1")
+            const { user, token } = await authServiceInstance.Login(email, password);
+            console.log("Aqui2")
+          return res.status(200).json({ user, token }).end();
+        } catch(e) {
+          return res.json(e).status(500).end();
+        }
+    }
+
+    async signup(req, res) {
+        try {
+          const { name, email, password } = req.body.user;
+          const authServiceInstance = new AuthService();
+          const { user, token } = await authServiceInstance.SignUp(email, password, name);
+          return res.json({ user, token }).status(200).end();
+        } catch (e) {
+            console.log("error")
+            console.log(e)
+          return res.json(e).status(500).end();
+        }
+      }
 }
 
 module.exports = new UserController()

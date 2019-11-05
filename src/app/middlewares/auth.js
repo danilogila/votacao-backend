@@ -1,23 +1,34 @@
-const jwt = require('jsonwebtoken')
-const authConfig = require('../../config/auth')
-const { promisify } = require('util')
+const jwt = require('express-jwt');
+const auth = require('../../config/auth')
 
-module.exports = async (req, res, next) => {
-    const authHeader = req.headers.authorization
+const getTokenFromHeaders = (req) => {
+  console.log("TITITITITITITRI")
+  const { headers: { authorization } } = req;
+  console.log("REQ do Token")
+  console.log(req.headers.authorization)
+  console.log(authorization)
+  if(authorization && authorization.split(' ')[0] === 'Bearer') {
+    return authorization.split(' ')[1];
+  }
+  return null;
+};
 
-    if(!authHeader){
-        return res.status(401).json({ error: 'Token not provided' })
-    }
+// const auth = {
+//   required: jwt({
+//     secret: 'secret',
+//     userProperty: 'payload',
+//     getToken: getTokenFromHeaders,
+//   }),
+//   optional: jwt({
+//     secret: 'secret',
+//     userProperty: 'payload',
+//     getToken: getTokenFromHeaders,
+//     credentialsRequired: false,
+//   }),
+// };
 
-    const [, token] = authHeader.split(' ')
-
-    try {
-        const decoded = await promisify(jwt.verify)(token, authConfig.secret)
-
-        req.userId = decoded.id
-
-        return next()
-    } catch (error) {
-        return res.status(401).json({ error: 'Token invalid' })
-    }
-}
+module.exports = jwt({
+  secret: auth.secret,
+  userProperty: 'token',
+  getToken: getTokenFromHeaders,
+});
