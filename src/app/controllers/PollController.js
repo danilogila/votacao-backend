@@ -1,4 +1,6 @@
 const Poll = require('../models/Poll')
+const redis = require('redis')
+const redisClient = redis.createClient()
 
 class PollController {
 
@@ -18,10 +20,9 @@ class PollController {
     }
 
     async index(req, res){
-
         try {
-            const polls = await Poll.find({})
-            return res.json(polls)
+            polls = await Poll.find({})
+            return res.status(200).json(polls)
         } catch (error) {
             return res.status(500).json(error)
         }
@@ -30,12 +31,25 @@ class PollController {
     async show(req, res){
         const { pollId } = req.params
 
-        try {
-            const poll = await Poll.findById({ _id: pollId })
-            res.status(200).json(poll)
-        } catch (error) {
-            res.status(500).json(error)
-        }
+        redisClient.get('getPoll', async (err, reply) => {
+            if (reply) {
+                console.log("Redis Cache!")
+                return res.status(200).send(JSON.parse(reply))
+            }
+            console.log("Mongo Data!")
+            let poll
+
+            try {
+                poll = await Poll.findById({ _id: pollId })
+            } catch (error) {
+                res.status(500).json(error)
+            }
+
+            redisClient.set('getPoll', JSON.stringify(poll))
+            redisClient.expire('getPoll', 10)
+            return res.status(200).json(poll)
+
+        })
     }
 
     async update(req, res){
