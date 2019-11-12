@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 const databaseConfig = require('./config/database')
 const morgan = require('morgan')
 const helmet = require('helmet')
+const compression = require('compression')
+const cors = require('cors')
 
 class App{
     constructor(){
@@ -26,6 +28,8 @@ class App{
         this.express.use(express.json())
         this.express.use(morgan('combined'))
         this.express.use(helmet())
+        this.express.use(compression())
+        this.express.use(cors())
     }
 
     routes() {

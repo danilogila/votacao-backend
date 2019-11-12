@@ -1,32 +1,32 @@
 const express = require('express')
 const routes = express.Router()
-
-const authMiddleware = require('./app/middlewares/')
-const isAuth = require('./app/middlewares/auth')
-const attachUser = require('./app/middlewares/attachUser')
 const controllers = require('./app/controllers/')
 
+// URL pra Votaçao Atual, podendo votar em uma opção
+routes.post('/polls/:pollId/vote/:optionId', controllers.VoteController.vote)
 
-routes.get('/polls', controllers.PollController.index)
-routes.get('/polls/:pollId', controllers.PollController.show)
+// Votação no Geral
+routes.get('/polls/:pollId', controllers.VoteController.total)
+
+// Votação por hora
+routes.get('/polls/:pollId/hour', controllers.VoteController.totalHour)
+
+// Total por participante
+routes.get('/polls/:pollId/option/:optionId', controllers.PollController.option)
+
+// Total geral (Somente as opçoes e seus votos)
+routes.get('/polls/:pollId/partial', controllers.PollController.partial)
+
+// Criar uma votação
 routes.post('/polls/new', controllers.PollController.store)
+
+// Atualizar uma votação
 routes.put('/polls/:pollId', controllers.PollController.update)
+
+// Deletar uma votação
 routes.delete('/polls/:pollId', controllers.PollController.delete)
-routes.post('/polls/:pollId/vote/:optionId', controllers.PollController.vote)
-// routes.post('/polls/filter', controllers.PollController.filter)
 
-routes.get('/users', controllers.UserController.index)
-routes.post('/users', controllers.UserController.store)
+// Listar Votações
+routes.get('/polls', controllers.PollController.index)
 
-routes.post('/users/signup', controllers.UserController.signup)
-routes.post('/users/login', controllers.UserController.login)
-// routes.post('/sessions', controllers.SessionController.store)
-
-// routes.use(authMiddleware)
-routes.get('/teste', isAuth, attachUser, (req, res) => {
-    console.log(req)
-
-})
-
-// routes.get('/item', authMiddleware.isAuth, authMiddleware.attachUser, (req, res) => res.send('Hello World'))
 module.exports = routes

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// const bcrypt = require('bcryptjs')
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken')
 const authConfig = require('../../config/auth')
@@ -63,47 +62,5 @@ UserSchema.methods.setPassword = function(password) {
       token: this.generateJWT(),
     };
   };
-
-// UserSchema.pre('save', async function (next){
-//     if(!this.isModified('password')){
-//         return next()
-//     }
-
-//     this.password = await bcrypt.hash(this.password, 8)
-// })
-
-// UserSchema.methods = {
-//     compareHash(password){
-//         return bcrypt.compare(password, this.password)
-//     }
-// }
-
-// UserSchema.statics = {
-//     generateToken({ id }){
-//         return jwt.sign({ id }, authConfig.secret, {
-//             expiresIn: authConfig.ttl
-//         })
-//     }
-// }
-
-// UserSchema.methods.generateJWT = function() {
-//     const today = new Date();
-//     const expirationDate = new Date(today);
-//     expirationDate.setDate(today.getDate() + 60);
-  
-//     return jwt.sign({
-//       email: this.email,
-//       id: this._id,
-//       exp: parseInt(expirationDate.getTime() / 1000, 10),
-//     }, 'secret');
-//   }
-
-// UsersSchema.methods.toAuthJSON = function() {
-//     return {
-//       _id: this._id,
-//       email: this.email,
-//       token: this.generateJWT(),
-//     };
-//   };
 
 module.exports = mongoose.model('User', UserSchema)
