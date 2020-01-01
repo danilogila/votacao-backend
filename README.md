@@ -1,5 +1,5 @@
 
-## [DIEGO CHAVÃO]
+## [Danilo Gila de Santana]
 **Globo.com: coding challenge**
 
 ====================
@@ -60,18 +60,18 @@ dos votos por candidato até aquele momento.
 ============================
 #### Regras de negócio
 
-1. Os usuários podem votar quantas vezes quiserem, independente da opção
+1. [x] Os usuários podem votar quantas vezes quiserem, independente da opção
    escolhida. Entretanto, a produção do programa não quer receber votos
    oriundos de uma máquina, apenas votos de pessoas.
 
-2. A votação é chamada na TV em horário nobre, com isso, é esperado um enorme
+2[x] A votação é chamada na TV em horário nobre, com isso, é esperado um enorme
    volume de votos concentrados em um curto espaço de tempo. Esperamos ter um
    teste disso, e por razões práticas, podemos considerar 1000 votos/seg como 
    baseline de performance deste teste.
 
 3. A produção do programa gostaria de ter URLs (a serem especificadas) para
-   consultar: o total de geral votos, o total por participante e o total de
-   votos por hora de cada paredão. Estas URLs precisam estar documentadas em
+   consultar: o total de geral votos [x], o total por participante [x] e o total de
+   votos por hora de cada paredão []. Estas URLs precisam estar documentadas em
    algum lugar do projeto.
 
 4. Além disso, os organizadores do BBB são exigentes. Portanto a interface do

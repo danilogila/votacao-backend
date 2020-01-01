@@ -13,7 +13,7 @@ class UserController{
 
         const user = await User.create(req.body)
 
-        return res.json(user)
+        return res.status(201).json(user)
     }
 
     async index(req, res){
@@ -29,11 +29,8 @@ class UserController{
         const email = req.body.user.email;
         const password = req.body.user.password;
         try {
-            console.log("Aqui3")
             const authServiceInstance = new AuthService();
-            console.log("Aqui1")
             const { user, token } = await authServiceInstance.Login(email, password);
-            console.log("Aqui2")
           return res.status(200).json({ user, token }).end();
         } catch(e) {
           return res.json(e).status(500).end();
@@ -47,8 +44,6 @@ class UserController{
           const { user, token } = await authServiceInstance.SignUp(email, password, name);
           return res.json({ user, token }).status(200).end();
         } catch (e) {
-            console.log("error")
-            console.log(e)
           return res.json(e).status(500).end();
         }
       }

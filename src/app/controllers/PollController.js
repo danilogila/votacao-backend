@@ -1,6 +1,9 @@
 const Poll = require('../models/Poll')
 const redis = require('redis')
 const redisClient = redis.createClient()
+const moment = require('moment')
+moment.suppressDeprecationWarnings = true;
+
 
 class PollController {
 
@@ -16,13 +19,12 @@ class PollController {
 
         const poll = await Poll.create(req.body)
 
-        return res.json(poll)
+        return res.status(201).json(poll)
     }
 
     async index(req, res){
         redisClient.get('indexPoll', async (err, cache) => {
             if (cache) {
-                console.log("Redis Cache")
                 return res.status(200).send(JSON.parse(cache))
             }
             let polls
@@ -32,7 +34,6 @@ class PollController {
             } catch (error) {
                 res.status(500).json(error)
             }
-            console.log("Mongo Data")
             redisClient.set('indexPoll', JSON.stringify(polls))
             redisClient.expire('indexPoll', 10)
             return res.status(200).json(polls)
@@ -77,29 +78,11 @@ class PollController {
         }
     }
 
-    async vote(req, res){
-        const { pollId, optionId } = req.params
-
-        try {
-            await Poll.update({_id: pollId, 
-                'choices._id': optionId}, {
-                    $inc:{'choices.$.votes':1}
-                })
-
-            return res.status(200).json({"msg": "Voto realizado com sucesso"})
-
-        } catch (error) {
-            res.status(500).json({"msg": "Erro ao realizar a voto"})
-        }
-
-    }
-
     async option(req, res){
         const { pollId, optionId} = req.params
         try {
             let poll = await Poll.findOne({_id: pollId});
             let option = poll.choices.id(optionId)
-
             res.status(200).json(option)
         } catch (error) {
             res.status(500).send()
@@ -124,6 +107,20 @@ class PollController {
         try {
             await Poll.findByIdAndDelete({ _id: pollId})
             res.status(204).send("Votação Deletada")
+        } catch (error) {
+            res.status(500).send(error)
+        }
+    }
+
+    async findRemainTime(req, res){
+        const { pollId } = req.params
+
+        try {
+            const { closeAt } = await Poll.findOne({ _id: pollId})
+            const currentDate = moment().format('YYYY/MM/DD HH:MM:SS')
+            const diffTime = moment.duration(moment(closeAt).diff(currentDate))
+
+            res.status(200).json({ remainTime: diffTime.asMilliseconds()})
         } catch (error) {
             res.status(500).send(error)
         }
