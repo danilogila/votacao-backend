@@ -1,5 +1,6 @@
 const mongoose =  require('mongoose')
 const { Schema } = mongoose
+const moment = require('moment')
 
 const ChoiceSchema = new Schema({
     name: {
@@ -35,10 +36,25 @@ const PollSchema = new Schema({
         required: true,
     },
     createdAt: {
-        type: Date,
-        default: Date.now
+        type: String,
+    },
+    closeAt: {
+        type: String,
+    },
+    remainTime:{
+        type: String
     },
     choices: [ChoiceSchema]
+})
+
+PollSchema.pre('save', function(next) {
+    const currentDate = moment().format('YYYY/MM/DD HH:MM:SS')
+    this.createdAt = currentDate
+
+    const closeDate = moment(currentDate).add(1, "days")
+    this.closeAt = closeDate.format('YYYY/MM/DD HH:MM:SS')
+
+    next()
 })
 
 module.exports = mongoose.model('Poll', PollSchema)

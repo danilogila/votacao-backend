@@ -44,7 +44,6 @@ class AuthService{
         if(!isValidPassword){
             throw new Error("Incorrect Password")
         }
-        console.log("AHhdshdhs")
         return {
             user: {
                 email: userData.email,
