@@ -28,7 +28,6 @@ const PollSchema = new Schema({
     title: {
         type: String,
         required: true,
-        unique: true,
         lowercase: true
     },
     open: {
@@ -36,10 +35,10 @@ const PollSchema = new Schema({
         required: true,
     },
     createdAt: {
-        type: String,
+        type: Date,
     },
     closeAt: {
-        type: String,
+        type: Date,
     },
     remainTime:{
         type: String
@@ -48,12 +47,9 @@ const PollSchema = new Schema({
 })
 
 PollSchema.pre('save', function(next) {
-    const currentDate = moment().format('YYYY/MM/DD HH:MM:SS')
-    this.createdAt = currentDate
-
-    const closeDate = moment(currentDate).add(1, "days")
-    this.closeAt = closeDate.format('YYYY/MM/DD HH:MM:SS')
-
+    let ms = new Date().getTime() + 86400000;
+    this.createdAt = new Date()
+    this.closeAt = new Date(ms);
     next()
 })
 
