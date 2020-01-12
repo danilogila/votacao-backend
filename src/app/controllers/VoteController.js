@@ -37,7 +37,7 @@ class VoteController{
         
         try {
             const votes = await Vote.find({ pollId })
-            res.status(200).json({ success: true, votes: votes.length })
+            res.status(200).json({ success: true, votes: votes })
         } catch (error) {
             res.status(500).json({ success: false, msg: error})
         }
