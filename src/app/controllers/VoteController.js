@@ -6,7 +6,7 @@ class VoteController{
     async vote(req, res){
         const { pollId, optionId } = req.params
         const captchaSecretKey = "6LefSckUAAAAANAZOZK_64wcKId-NF-7OF9cCMBN"
-        let response = undefined
+        let response = null
 
         if (!req.body.captcha){
             return res.status(400).json({ success: false, msg: "Resolva o Captcha primeiro"})
@@ -18,10 +18,10 @@ class VoteController{
         try {
             response = await axios.post(verifyUrl)
         } catch (error) {
-            return error
+            return res.status(400).json({ success: false, msg: error})
         }
         
-        if(response.data.success === true){
+        if(response.data.success){
             try {
                 await Vote.create({ pollId, optionId })
                 return res.status(201).json({ success: true, msg: "Voto realizado com sucesso!" })
@@ -38,40 +38,78 @@ class VoteController{
         
         try {
             const votes = await Vote.find({ pollId })
-            res.status(200).json({ success: true, votes: votes })
+            res.status(200).json({ success: true, votes: votes.length })
         } catch (error) {
             res.status(500).json({ success: false, msg: error})
         }
     }
 
-    async totalCanditate(req, res){
+    async totalCandidate(req, res){
         const { pollId, optionId } = req.params
-
+        
         try {
             const votes = await Vote.find({ pollId, optionId })
-            const total = votes.length
-            res.status(200).json({ success: true, votes: total })
+            console.log(votes)
+            res.status(200).json({ success: true, votes: votes.length })
         } catch (error) {
             res.status(500).json({ success: false, msg: error})
         }
     }
-
+    
     async totalHour(req, res){
         const { pollId } = req.params
-        const currentDate = moment().format('YYYY/MM/DD')
-        const currentHour = moment().format('HH')
 
         try {
-            const votes = await Vote.find({
-                pollId, 
-                votedDate: currentDate,
-                votedHour: currentHour
-            })
+            const votes = await Vote.find({ pollId })
+            const votesPerHour = {}
 
-            res.status(200).json({ success: true, total: votes.length })
+            if (!votes){ 
+                return res.status(200).json({ success: true, total: 0})
+            }
+
+            let votedDates = [... new Set(votes.map((vote) => {
+                return vote.votedDate
+            }))]
+
+            initializeVoteDates(votedDates, votesPerHour)
+            
+            for(let date of votedDates) {
+                let voteFiltered = (votes.filter((vote) => {
+                    return vote.votedDate === date
+                }))
+                
+                incrementVotesPerHour(voteFiltered, date, votesPerHour)
+            }
+
+            return res.status(200).json({ success: true, total: votesPerHour})
         } catch (error) {
+            console.log(error)
             res.status(500).json({ success: false, msg: error })
         }
+    }
+}
+
+const initializeVoteDates = (votedDates, votesPerHour) => {
+    for(const key of votedDates){
+        votesPerHour[key]= {}
+    }
+
+    for(let date of votedDates){
+        let hours = []
+
+        for(let x = 0; x < 24; x++ ){
+            hours.push(`${x}`)
+        }
+        let hoursObject = hours.reduce((key,value) => (key[value] = 0, key), {})
+        
+        votesPerHour[date] = hoursObject
+    }
+}
+
+const incrementVotesPerHour = (voteFiltered, date, votesPerHour) => {
+    for(let vote of voteFiltered){
+        let { votedHour } = vote
+        votesPerHour[date][votedHour] += 1
     }
 }
 
