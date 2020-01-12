@@ -8,12 +8,12 @@ let PORT = process.env.PORT || 3000
 if(cluster.isMaster) {
   console.log('Master cluster setting up ' + numWorkers + ' workers...');
 
-  for(var i = 0; i < numWorkers; i++) {
+  for(let i = 0; i < numWorkers; i++) {
       cluster.fork();
   }
 
   cluster.on('online', function(worker) {
-      console.log('Worker ' + worker.process.pid + ' is online');
+      console.log('%s Worker ' + worker.process.pid + ' is online', chalk.green('✓'));
   });
 
   cluster.on('exit', function(worker, code, signal) {
