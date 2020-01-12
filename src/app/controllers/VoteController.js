@@ -1,5 +1,4 @@
 const Vote = require('../models/Vote')
-const moment = require('moment')
 const axios = require('axios')
 
 class VoteController{
@@ -49,7 +48,6 @@ class VoteController{
         
         try {
             const votes = await Vote.find({ pollId, optionId })
-            console.log(votes)
             res.status(200).json({ success: true, votes: votes.length })
         } catch (error) {
             res.status(500).json({ success: false, msg: error})
