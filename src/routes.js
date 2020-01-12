@@ -5,20 +5,14 @@ const controllers = require('./app/controllers/')
 // URL pra Votaçao Atual, podendo votar em uma opção
 routes.post('/polls/:pollId/vote/:optionId', controllers.VoteController.vote)
 
-// Votacao inteira
+// Dados de uma votacao
 routes.get('/polls/:pollId', controllers.PollController.show)
 
-// Votação no Geral
+// Quantidade de votos de uma votação
 routes.get('/polls/:pollId/total', controllers.VoteController.total)
 
-// Total por participante V2
-routes.get('/polls/:pollId/option/:optionId/total', controllers.VoteController.totalCanditate)
-
-// // Total por participante
-// routes.get('/polls/:pollId/option/:optionId', controllers.PollController.option)
-
-// // Total geral (Somente as opçoes e seus votos)
-// routes.get('/polls/:pollId/partial', controllers.PollController.partial)
+// Total de votos por candidator
+routes.get('/polls/:pollId/candidate/:optionId/total', controllers.VoteController.totalCandidate)
 
 // Criar uma votação
 routes.post('/polls/new', controllers.PollController.store)
@@ -35,5 +29,7 @@ routes.get('/polls/:pollId/time', controllers.PollController.findRemainTime)
 // Listar Votações
 routes.get('/polls', controllers.PollController.index)
 
+// Listar quantidade de votações por hora
+routes.get('/polls/:pollId/votes/hour', controllers.VoteController.totalHour)
 
 module.exports = routes
