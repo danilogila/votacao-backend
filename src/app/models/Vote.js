@@ -19,7 +19,7 @@ const voteSchema = new Schema({
 
 voteSchema.pre('save', function(next) {
     const currentDate = moment().format('YYYY/MM/DD')
-    const currentHour = moment().format('HH')
+    const currentHour = moment().format('H')
 
     this.votedDate = currentDate
     this.votedHour = currentHour
