@@ -81,7 +81,6 @@ class VoteController{
 
             return res.status(200).json({ success: true, total: votesPerHour})
         } catch (error) {
-            console.log(error)
             res.status(500).json({ success: false, msg: error })
         }
     }

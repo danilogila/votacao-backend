@@ -3,7 +3,7 @@ const chalk = require('chalk')
 const cluster = require('cluster')
 let numWorkers = require('os').cpus().length;
 
-let PORT = process.env.PORT || 3000
+let PORT = process.env.PORT || 4000
 
 if(cluster.isMaster) {
   console.log('Master cluster setting up ' + numWorkers + ' workers...');
