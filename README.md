@@ -1,6 +1,6 @@
-# Desafio Globo.com (Backend)
+# Vota (Backend)
 
-Backend do desafio da Globo.com que consiste em recriar a votação de eliminação de um candidato do BBB.
+Backend em NodeJS que consiste em criar uma votação
 
 ## Instalação
 
