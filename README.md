@@ -1,4 +1,4 @@
-# Vota (Backend)
+# App Votação (Backend)
 
 Backend em NodeJS que consiste em criar uma votação
 
